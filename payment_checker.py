@@ -16,7 +16,7 @@ mp = mercadopago.SDK(ACCESS_TOKEN)
 bot = Bot(token=TELEGRAM_TOKEN)
 
 # Configurando logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Armazenamento temporário dos dados do pagamento para cada usuário
@@ -53,7 +53,7 @@ async def check_payment_status(payment_id):
 async def start_payment_verification(amount, user_chat_id):
     try:
         pix_qr_code_base64, pix_key, payment_id = create_payment(amount)
-        logger.info(f"Pagamento criado com ID {payment_id}")
+        #logger.info(f"Pagamento criado com ID {payment_id}")
 
         # Armazena os dados do pagamento no dicionário
         user_payment_data[user_chat_id] = {
@@ -73,13 +73,13 @@ async def start_payment_verification(amount, user_chat_id):
 
         # Envia o QR Code e a chave PIX para o usuário
         await bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\nChave PIX: {pix_key}")
-        logger.info(f"QR Code enviado para o usuário {user_chat_id}")
+        #logger.info(f"QR Code enviado para o usuário {user_chat_id}")
 
         # Inicia a verificação do status do pagamento com um atraso inicial
         asyncio.create_task(check_payment_status_loop(payment_id, user_chat_id))
         return pix_qr_code_base64, pix_key, payment_id
     except Exception as e:
-        logger.error(f"Erro ao iniciar verificação de pagamento: {e}")
+        #logger.error(f"Erro ao iniciar verificação de pagamento: {e}")
         await bot.send_message(chat_id=user_chat_id, text="Ocorreu um erro ao processar o pagamento. Tente novamente mais tarde.")
         return None, None, None
 
@@ -101,16 +101,16 @@ async def check_payment_status_loop(payment_id, user_chat_id):
             status = await check_payment_status(payment_id)
             if status == "approved":
                 await bot.send_message(chat_id=user_chat_id, text="Seu pagamento foi aprovado!")
-                logger.info(f"Pagamento {payment_id} aprovado")
+                #logger.info(f"Pagamento {payment_id} aprovado")
                 save_payment_status(str(user_chat_id), "approved")
                 return "approved"
             elif status == "pending":
                 if checks % 1 == 0:  # Notificar a cada 3 verificações (6 minutos)
                     await send_photo_with_buttons(user_chat_id, "img/VIRGENZINHAS.png", "Seu pagamento ainda está pendente. Por favor, aguarde.")
-                    logger.info(f"Pagamento {payment_id} ainda pendente")
+                    #logger.info(f"Pagamento {payment_id} ainda pendente")
             else:
                 await bot.send_message(chat_id=user_chat_id, text=f"Status do pagamento: {status}")
-                logger.info(f"Status do pagamento {payment_id}: {status}")
+                #logger.info(f"Status do pagamento {payment_id}: {status}")
                 break
         except Exception as e:
             logger.error(f"Erro ao verificar status do pagamento: {e}")
@@ -140,7 +140,7 @@ def button(update: Update, context: CallbackContext):
 
         # Envia o QR Code e a chave PIX novamente para o usuário
         context.bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\nChave PIX: {pix_key}")
-        logger.info(f"QR Code reenviado para o usuário {user_chat_id}")
+        #logger.info(f"QR Code reenviado para o usuário {user_chat_id}")
     else:
         query.edit_message_text(text="Nenhum pagamento pendente encontrado.")
 

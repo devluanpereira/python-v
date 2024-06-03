@@ -6,8 +6,8 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from payment_checker import start_payment_verification, load_payment_status
 
 # Configurando logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 # Dicionário para armazenar o status do pagamento e o timestamp do último QR code gerado
 user_payments = {}
@@ -45,12 +45,12 @@ async def start(update: Update, context):
     image_path = "img/VIRGENZINHAS.png"
     with open(image_path, 'rb') as image_file:
         await update.message.reply_photo(photo=image_file, caption='Escolha uma opção:', reply_markup=reply_markup)
-        logger.info("Mensagem de resposta enviada")
+        #logger.info("Mensagem de resposta enviada")
 
 async def button(update: Update, context):
     query = update.callback_query
     await query.answer()
-    logger.info(f"Botão {query.data} pressionado")
+    #logger.info(f"Botão {query.data} pressionado")
 
     amount_mapping = {
         'generate_pix': 1.0,
@@ -62,7 +62,7 @@ async def button(update: Update, context):
         amount = amount_mapping[query.data]
         user_chat_id = query.message.chat_id
         user_id = str(query.from_user.id)
-        logger.info(f"Iniciando verificação do pagamento para o valor {amount}")
+        #logger.info(f"Iniciando verificação do pagamento para o valor {amount}")
 
         # Verificar se existe um QR code pendente para o usuário
         payment_status = load_payment_status(user_id)
@@ -84,9 +84,9 @@ async def button(update: Update, context):
                 "timestamp": datetime.now(),
                 "payment_id": payment_id
             }
-            logger.info("Verificação do pagamento iniciada")
+            #logger.info("Verificação do pagamento iniciada")
         except Exception as e:
-            logger.error(f"Erro ao iniciar verificação de pagamento: {e}")
+            #logger.error(f"Erro ao iniciar verificação de pagamento: {e}")
             await query.message.reply_text("Ocorreu um erro ao processar o pagamento. Tente novamente mais tarde.")
 
 def main():
