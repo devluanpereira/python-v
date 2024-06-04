@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import asyncio
 import datetime
 import logging
@@ -11,8 +13,11 @@ from telegram.ext import CommandHandler, CallbackQueryHandler, CallbackContext, 
 from PIL import Image
 from pix import main as create_payment
 
-ACCESS_TOKEN = "APP_USR-5571932679721241-060313-760c7dae4eeac404293a2dbc0a540cdf-284563493"
-TELEGRAM_TOKEN = "7394456845:AAGWOj4asZONjuLDj7hwHiXqdatnmt3IZHM"
+# Carregando variáveis de ambiente do arquivo .env
+load_dotenv()
+
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 mp = mercadopago.SDK(ACCESS_TOKEN)
 bot = Bot(token=TELEGRAM_TOKEN)

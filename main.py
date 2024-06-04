@@ -5,6 +5,13 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from payment_checker import start_payment_verification, load_payment_status
 
+# Se estiver usando dotenv para carregar variáveis de ambiente
+import os
+from dotenv import load_dotenv
+
+# Carregando variáveis de ambiente do arquivo .env
+load_dotenv()
+
 # Configurando logging
 #logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 #logger = logging.getLogger(__name__)
@@ -19,11 +26,11 @@ async def start(update: Update, context):
     # Permitir gerar um novo QR code
     keyboard = [
         [
-            InlineKeyboardButton("Gerar PIX", callback_data='generate_pix'),
+            InlineKeyboardButton("Gerar PIX", callback_data='valor1'),
         ],
         [
-            InlineKeyboardButton("Botão 2", callback_data='2'),
-            InlineKeyboardButton("Botão 3", callback_data='3')
+            InlineKeyboardButton("Botão 2", callback_data='valor2'),
+            InlineKeyboardButton("Botão 3", callback_data='valor3')
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -38,9 +45,9 @@ async def button(update: Update, context):
     #logger.info(f"Botão {query.data} pressionado")
 
     amount_mapping = {
-        'generate_pix': 1.0,
-        '2': 2.0,
-        '3': 3.0
+        'valor1': 1.0,  # COLOQUE O VALOR DO PRIMEIRO BOTÃO
+        'valor2': 2.0,  # COLOQUE O VALOR DO SEGUNDO  BOTÃO
+        'valor3': 3.0   # COLOQUE O VALOR DO TERCEIRO BOTÃO
     }
 
     if query.data in amount_mapping:
@@ -75,7 +82,10 @@ async def button(update: Update, context):
             await query.message.reply_text("Ocorreu um erro ao processar o pagamento. Tente novamente mais tarde.")
 
 def main():
-    application = Application.builder().token("7394456845:AAGWOj4asZONjuLDj7hwHiXqdatnmt3IZHM").build()
+    # Se estiver usando dotenv para carregar variáveis de ambiente
+    token = os.getenv("TELEGRAM_TOKEN")
+
+    application = Application.builder().token(token).build()
 
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CallbackQueryHandler(button))

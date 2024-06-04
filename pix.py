@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import mercadopago
 
 class MercadoPagoIntegration:
@@ -18,7 +22,7 @@ class MercadoPagoIntegration:
         return payment_response
 
 def main(amount):
-    ACCESS_TOKEN = "APP_USR-5571932679721241-060313-760c7dae4eeac404293a2dbc0a540cdf-284563493"
+    ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
     
     mp_integration = MercadoPagoIntegration(ACCESS_TOKEN)
     
