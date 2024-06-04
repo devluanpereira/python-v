@@ -86,8 +86,24 @@ async def start_payment_verification(amount, user_chat_id):
         image.save(temp_file, format='PNG')
         temp_file.seek(0)
 
+        # Função para centralizar a chave PIX
+        def centralize_text(text, width=40):
+            lines = text.split("\n")
+            centered_lines = []
+            for line in lines:
+                if len(line) < width:
+                    spaces = (width - len(line)) // 2
+                    centered_line = " " * spaces + line
+                else:
+                    centered_line = line
+                centered_lines.append(centered_line)
+            return "\n".join(centered_lines)
+
+        # Centraliza a chave PIX
+        centered_pix_key = centralize_text(pix_key)
+
         # Envia o QR Code e a chave PIX para o usuário
-        await bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\n\nChave PIX (copia e cola):\n\n```\n{pix_key}\n```", parse_mode='Markdown')
+        await bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\n\nChave PIX (copia e cola):\n\n```\n{centered_pix_key}\n```", parse_mode='Markdown')
         logger.info(f"QR Code enviado para o usuário {user_chat_id}")
 
         # Inicia a verificação do status do pagamento com um atraso inicial
@@ -153,8 +169,24 @@ def button(update: Update, context: CallbackContext):
         image.save(temp_file, format='PNG')
         temp_file.seek(0)
 
+        # Função para centralizar a chave PIX
+        def centralize_text(text, width=40):
+            lines = text.split("\n")
+            centered_lines = []
+            for line in lines:
+                if len(line) < width:
+                    spaces = (width - len(line)) // 2
+                    centered_line = " " * spaces + line
+                else:
+                    centered_line = line
+                centered_lines.append(centered_line)
+            return "\n".join(centered_lines)
+
+        # Centraliza a chave PIX
+        centered_pix_key = centralize_text(pix_key)
+
         # Envia o QR Code e a chave PIX novamente para o usuário
-        context.bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\n\nChave PIX:\n\n```\n{pix_key}\n```", parse_mode='Markdown')
+        context.bot.send_photo(chat_id=user_chat_id, photo=temp_file, caption=f"Use este QR Code para fazer o pagamento.\n\nChave PIX:\n\n```\n{centered_pix_key}\n```", parse_mode='Markdown')
         logger.info(f"QR Code reenviado para o usuário {user_chat_id}")
     else:
         query.edit_message_text(text="Nenhum pagamento pendente encontrado.")
