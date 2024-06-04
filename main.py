@@ -16,20 +16,20 @@ async def start(update: Update, context):
     user_id = str(update.message.from_user.id)
     now = datetime.now()
 
-    # Verifica se o usuário já tem um pagamento pendente ou aprovado
-    payment_status = load_payment_status(user_id)
-    if payment_status == "approved":
-        user_payments.pop(user_id, None)
-    elif payment_status == "pending":
-        payment_info = user_payments.get(user_id, {})
-        timestamp = payment_info.get("timestamp", now)
-        time_diff = now - timestamp
-        if time_diff < timedelta(minutes=30):
-            await update.message.reply_text(f"Você já possui um pagamento pendente. Por favor, espere {30 - time_diff.seconds // 60} minutos antes de gerar outro QR code.")
-            return
-        else:
-            # Se passaram mais de 30 minutos, permitir gerar um novo QR code
-            user_payments.pop(user_id)
+    # # Verifica se o usuário já tem um pagamento pendente ou aprovado
+    # payment_status = load_payment_status(user_id)
+    # if payment_status == "approved":
+    #     user_payments.pop(user_id, None)
+    # elif payment_status == "pending":
+    #     payment_info = user_payments.get(user_id, {})
+    #     timestamp = payment_info.get("timestamp", now)
+    #     time_diff = now - timestamp
+    #     if time_diff < timedelta(minutes=30):
+    #         await update.message.reply_text(f"Você já possui um pagamento pendente. Por favor, espere {30 - time_diff.seconds // 60} minutos antes de gerar outro QR code.")
+    #         return
+    #     else:
+    #         # Se passaram mais de 30 minutos, permitir gerar um novo QR code
+    #         user_payments.pop(user_id)
 
     # Permitir gerar um novo QR code
     keyboard = [

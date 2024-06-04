@@ -1,7 +1,9 @@
 import asyncio
+import datetime
 import logging
 import base64
 import json
+from datetime import datetime, timedelta
 from io import BytesIO
 import mercadopago
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -51,15 +53,28 @@ async def check_payment_status(payment_id):
     return None
 
 async def start_payment_verification(amount, user_chat_id):
+    user_id = str(user_chat_id)
+    now = datetime.now()
+
+    # Verifica se o usuário já possui um pagamento pendente
+    if user_id in user_payment_data:
+        last_payment_time = user_payment_data[user_id].get("timestamp", None)
+        if last_payment_time:
+            time_diff = now - last_payment_time
+            if time_diff < timedelta(hours=24):
+                await bot.send_message(chat_id=user_chat_id, text="Você já tem um pagamento pendente. Por favor, aguarde 24 horas antes de gerar outro PIX.")
+                return None, None, None
+
     try:
         pix_qr_code_base64, pix_key, payment_id = create_payment(amount)
         #logger.info(f"Pagamento criado com ID {payment_id}")
 
         # Armazena os dados do pagamento no dicionário
-        user_payment_data[user_chat_id] = {
+        user_payment_data[user_id] = {
             "pix_qr_code_base64": pix_qr_code_base64,
             "pix_key": pix_key,
-            "payment_id": payment_id
+            "payment_id": payment_id,
+            "timestamp": now  # Armazena o timestamp do pagamento atual
         }
 
         # Decodifica a imagem base64
@@ -82,6 +97,7 @@ async def start_payment_verification(amount, user_chat_id):
         #logger.error(f"Erro ao iniciar verificação de pagamento: {e}")
         await bot.send_message(chat_id=user_chat_id, text="Ocorreu um erro ao processar o pagamento. Tente novamente mais tarde.")
         return None, None, None
+
 
 async def send_photo_with_buttons(user_chat_id, image_path, caption):
     keyboard = [
