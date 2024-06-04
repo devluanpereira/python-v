@@ -18,7 +18,7 @@ class MercadoPagoIntegration:
         return payment_response
 
 def main(amount):
-    ACCESS_TOKEN = "APP_USR-5571155767002487-032220-244efb294b0bf14a9c8772ff136b60c5-1094153639"
+    ACCESS_TOKEN = "APP_USR-5571932679721241-060313-760c7dae4eeac404293a2dbc0a540cdf-284563493"
     
     mp_integration = MercadoPagoIntegration(ACCESS_TOKEN)
     

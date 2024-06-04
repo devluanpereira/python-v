@@ -11,7 +11,7 @@ from telegram.ext import CommandHandler, CallbackQueryHandler, CallbackContext, 
 from PIL import Image
 from pix import main as create_payment
 
-ACCESS_TOKEN = "APP_USR-5571155767002487-032220-244efb294b0bf14a9c8772ff136b60c5-1094153639"
+ACCESS_TOKEN = "APP_USR-5571932679721241-060313-760c7dae4eeac404293a2dbc0a540cdf-284563493"
 TELEGRAM_TOKEN = "7394456845:AAGWOj4asZONjuLDj7hwHiXqdatnmt3IZHM"
 
 mp = mercadopago.SDK(ACCESS_TOKEN)
